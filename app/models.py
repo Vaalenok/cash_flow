@@ -20,7 +20,7 @@ class Status(models.Model):
 
 
 class CashFlow(models.Model):
-    date_of_create = models.DateField(models.DateField(default=datetime.date.today))
+    date_of_create = models.DateField(default=datetime.date.today)
     status = models.ForeignKey(Status, on_delete=models.PROTECT, related_name="cash_flows")
     type = models.ForeignKey(Type, on_delete=models.PROTECT, related_name="cash_flows")
     category = models.ForeignKey(Subcategory, on_delete=models.PROTECT, related_name="cash_flows")
