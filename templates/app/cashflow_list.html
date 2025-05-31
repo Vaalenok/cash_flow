@@ -91,6 +91,15 @@
         <div class="table-responsive" style="margin-bottom: 80px;">
             <table class="table table-bordered table-striped">
                 <thead class="table-dark">
+                    <colgroup>
+                        <col style="width: 12%;">
+                        <col style="width: 12%;">
+                        <col style="width: 12%;">
+                        <col style="width: 14%;">
+                        <col style="width: 14%;">
+                        <col style="width: 18%;">
+                        <col style="width: 18%;">
+                    </colgroup>
                     <tr>
                         <th>Дата</th>
                         <th>Статус</th>
@@ -107,11 +116,11 @@
                         <tr class="table-row-clickable" data-href="{% url "cashflow_edit" flow.id %}">
                             <td>{{ flow.date_of_create|date:"d.m.Y" }}</td>
                             <td>{{ flow.status.name }}</td>
-                            <td>{{ flow.type.name }}</td>
+                            <td>{{ flow.category.category.type.name }}</td>
                             <td>{{ flow.category.category.name }}</td>
                             <td>{{ flow.category.name }}</td>
                             <td>{{ flow.amount|floatformat:2 }} ₽</td>
-                            <td>{{ flow.comment|default:"—"|truncatechars:30 }}</td>
+                            <td>{{ flow.comment|default:"—"|truncatechars:20 }}</td>
                         </tr>
                     {% empty %}
                         <tr>
@@ -126,6 +135,10 @@
     </div>
     
     <style>
+        html {
+            overflow-y: scroll;
+        }
+        
         .fab-center {
             position: fixed;
             bottom: 20px;

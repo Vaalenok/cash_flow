@@ -19,13 +19,12 @@ class CashFlowForm(forms.ModelForm):
 
     class Meta:
         model = CashFlow
-        fields = ["date_of_create", "status", "type", "category", "amount", "comment"]
+        fields = ["date_of_create", "status", "category", "amount", "comment"]
         widgets = {
             "date_of_create": forms.DateInput(attrs={"type": "date", "class": "form-control"}),
             "comment": forms.Textarea(attrs={"rows": 3, "class": "form-control"}),
             "amount": forms.NumberInput(attrs={"class": "form-control"}),
             "status": forms.Select(attrs={"class": "form-select"}),
-            "type": forms.Select(attrs={"class": "form-select"}),
             "category": forms.Select(attrs={"class": "form-select"}),
         }
 
@@ -58,7 +57,7 @@ class CashFlowForm(forms.ModelForm):
         elif initial.get("category_filter"):
             selected_category_id = initial.get("category_filter")
 
-        self.fields["type"].queryset = Type.objects.all()
+        self.fields["type_filter"].queryset = Type.objects.all()
 
         if selected_category_id:
             self.fields["category"].queryset = Subcategory.objects.filter(category_id=selected_category_id)
