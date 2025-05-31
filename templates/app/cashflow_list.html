@@ -15,21 +15,21 @@
         <form method="get" class="mb-4">
             <div class="row g-3 mb-3">
                 <div class="col-md-2">
-                    <label class="form-label">Тип</label>
-                    <select name="type" class="form-select">
-                        <option value="">Все</option>
-                        {% for t in types %}
-                            <option value="{{ t.id }}" {% if request.GET.type == t.id|stringformat:"s" %}selected{% endif %}>{{ t.name }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-            
-                <div class="col-md-2">
                     <label class="form-label">Статус</label>
                     <select name="status" class="form-select">
                         <option value="">Все</option>
                         {% for s in statuses %}
                             <option value="{{ s.id }}" {% if request.GET.status == s.id|stringformat:"s" %}selected{% endif %}>{{ s.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            
+                <div class="col-md-2">
+                    <label class="form-label">Тип</label>
+                    <select name="type" class="form-select">
+                        <option value="">Все</option>
+                        {% for t in types %}
+                            <option value="{{ t.id }}" {% if request.GET.type == t.id|stringformat:"s" %}selected{% endif %}>{{ t.name }}</option>
                         {% endfor %}
                     </select>
                 </div>

@@ -4,6 +4,10 @@ from .forms import CashFlowForm
 from .models import CashFlow, Type, Status, Category, Subcategory
 
 
+def custom_404(request, exception):
+    return render(request, "app/404.html", status=404)
+
+
 def cashflow_list(request):
     qs = CashFlow.objects.all()
 
@@ -44,7 +48,12 @@ def cashflow_list(request):
     if comment:
         qs = qs.filter(comment__icontains=comment)
 
-    categories = Category.objects.all()
+    types = Type.objects.all()
+
+    if type_id:
+        categories = Category.objects.filter(type_id=type_id)
+    else:
+        categories = Category.objects.all()
 
     if category_id:
         subcategories = Subcategory.objects.filter(category_id=category_id).all()
@@ -53,7 +62,7 @@ def cashflow_list(request):
 
     context = {
         "cashflows": qs,
-        "types": Type.objects.all(),
+        "types": types,
         "statuses": Status.objects.all(),
         "categories": categories,
         "subcategories": subcategories
@@ -67,10 +76,9 @@ def cashflow_edit(request, pk=None):
 
     if request.method == "POST":
         action = request.POST.get("action")
+        form = CashFlowForm(request.POST, instance=instance)
 
         if action == "save":
-            form = CashFlowForm(request.POST, instance=instance)
-
             if form.is_valid():
                 form.save()
                 return redirect("cashflow_list")
@@ -81,7 +89,8 @@ def cashflow_edit(request, pk=None):
         initial = {}
 
         if instance and instance.category:
-            initial["category_filter"] = instance.category.category_id
+            initial["category_filter"] = instance.category.category
+            initial["type_filter"] = instance.category.category.type
 
         form = CashFlowForm(instance=instance, initial=initial)
 
