@@ -21,11 +21,11 @@ def cashflow_list(request):
     amount_max = request.GET.get("amount_max")
     comment = request.GET.get("comment")
 
-    if type_id:
-        qs = qs.filter(type_id=type_id)
-
     if status_id:
         qs = qs.filter(status_id=status_id)
+
+    if type_id:
+        qs = qs.filter(category__category__type_id=type_id)
 
     if category_id:
         qs = qs.filter(category__category_id=category_id)
