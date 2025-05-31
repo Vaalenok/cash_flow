@@ -14,20 +14,6 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name='Category',
-            fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=100)),
-            ],
-        ),
-        migrations.CreateModel(
-            name='Status',
-            fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=100)),
-            ],
-        ),
-        migrations.CreateModel(
             name='Type',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
@@ -35,11 +21,30 @@ class Migration(migrations.Migration):
             ],
         ),
         migrations.CreateModel(
+            name='Category',
+            fields=[
+                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('name', models.CharField(max_length=100)),
+                ('type',
+                 models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='categories',
+                                   to='app.type')),
+            ],
+        ),
+        migrations.CreateModel(
             name='Subcategory',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('name', models.CharField(max_length=100)),
-                ('category', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, related_name='subcategories', to='app.category')),
+                ('category',
+                 models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, related_name='subcategories',
+                                   to='app.category')),
+            ],
+        ),
+        migrations.CreateModel(
+            name='Status',
+            fields=[
+                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('name', models.CharField(max_length=100)),
             ],
         ),
         migrations.CreateModel(

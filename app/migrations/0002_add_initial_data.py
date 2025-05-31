@@ -13,21 +13,23 @@ def add_initial_data(apps, schema_editor):
         status.objects.create(name=status_name)
 
     # Типы
-    types = ["Пополнение", "Списание"]
-    for type_name in types:
-        _type.objects.create(name=type_name)
-
-    # Категории и подкатегории
-    categories_with_subs = {
-        "Инфраструктура": ["VPS", "Proxy"],
-        "Маркетинг": ["Farpost", "Avito"],
+    types = {
+        "Пополнение": {
+            "Инфраструктура": ["VPS", "Proxy"]
+        },
+        "Списание": {
+            "Маркетинг": ["Farpost", "Avito"]
+        }
     }
 
-    for category_name, sub_names in categories_with_subs.items():
-        new_category = category.objects.create(name=category_name)
+    for type_name, _category in types.items():
+        new_type = _type.objects.create(name=type_name)
 
-        for sub_name in sub_names:
-            subcategory.objects.create(name=sub_name, category=new_category)
+        for category_name, sub_names in _category.items():
+            new_category = category.objects.create(name=category_name, type=new_type)
+
+            for sub_name in sub_names:
+                subcategory.objects.create(name=sub_name, category=new_category)
 
 
 class Migration(migrations.Migration):
