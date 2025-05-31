@@ -38,4 +38,4 @@ class CashFlow(models.Model):
     type = models.ForeignKey(Type, on_delete=models.PROTECT, related_name="cash_flows")
     category = models.ForeignKey(Subcategory, on_delete=models.PROTECT, related_name="cash_flows")
     amount = models.FloatField()
-    comment = models.TextField(blank=True)
+    comment = models.TextField(blank=True, null=True)

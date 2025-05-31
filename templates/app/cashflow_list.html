@@ -23,7 +23,7 @@
                         {% endfor %}
                     </select>
                 </div>
-            
+
                 <div class="col-md-2">
                     <label class="form-label">Тип</label>
                     <select name="type" class="form-select">
@@ -88,7 +88,7 @@
             </div>
         </form>
     
-        <div class="table-responsive">
+        <div class="table-responsive" style="margin-bottom: 80px;">
             <table class="table table-bordered table-striped">
                 <thead class="table-dark">
                     <tr>
@@ -120,8 +120,33 @@
                     {% endfor %}
                 </tbody>
             </table>
+            
+            <a href="{% url 'cashflow_create' %}" class="btn btn-success rounded-circle fab-center" title="Добавить">+</a>
         </div>
     </div>
+    
+    <style>
+        .fab-center {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            font-size: 32px;
+            padding: 0;
+            box-shadow: 0 3px 6px rgba(0,0,0,0.3);
+            
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            
+            line-height: 1;
+            font-family: Arial, sans-serif;
+            user-select: none;
+        }
+    </style>
 
     <script>
         document.addEventListener("DOMContentLoaded", function() {

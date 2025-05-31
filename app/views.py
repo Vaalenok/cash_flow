@@ -71,6 +71,20 @@ def cashflow_list(request):
     return render(request, "app/cashflow_list.html", context)
 
 
+def cashflow_create(request):
+    if request.method == "POST":
+        form = CashFlowForm(request.POST)
+
+        if form.is_valid():
+            form.save()
+            return redirect("cashflow_list")
+    else:
+        form = CashFlowForm()
+
+    return render(request, "app/cashflow_create-edit.html",
+                  {"form": form, "back_url": request.META.get("HTTP_REFERER", "/")})
+
+
 def cashflow_edit(request, pk=None):
     instance = get_object_or_404(CashFlow, pk=pk) if pk else None
 
@@ -94,4 +108,5 @@ def cashflow_edit(request, pk=None):
 
         form = CashFlowForm(instance=instance, initial=initial)
 
-    return render(request, "app/cashflow_edit.html", {"form": form, "object": instance})
+    return render(request, "app/cashflow_create-edit.html",
+                  {"form": form, "object": instance, "back_url": request.META.get("HTTP_REFERER", "/")})

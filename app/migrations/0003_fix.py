@@ -16,4 +16,9 @@ class Migration(migrations.Migration):
             name='date_of_create',
             field=models.DateField(default=datetime.date.today),
         ),
+        migrations.AlterField(
+            model_name='cashflow',
+            name='comment',
+            field=models.TextField(blank=True, null=True),
+        )
     ]
