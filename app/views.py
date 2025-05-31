@@ -66,10 +66,16 @@ def cashflow_edit(request, pk=None):
     instance = get_object_or_404(CashFlow, pk=pk) if pk else None
 
     if request.method == "POST":
-        form = CashFlowForm(request.POST, instance=instance)
+        action = request.POST.get("action")
 
-        if form.is_valid():
-            form.save()
+        if action == "save":
+            form = CashFlowForm(request.POST, instance=instance)
+
+            if form.is_valid():
+                form.save()
+                return redirect("cashflow_list")
+        elif action == "delete":
+            instance.delete()
             return redirect("cashflow_list")
     else:
         initial = {}
