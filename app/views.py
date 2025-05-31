@@ -1,6 +1,7 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404, redirect
 
-from .models import CashFlow, Type, Status, Category
+from .forms import CashFlowForm
+from .models import CashFlow, Type, Status, Category, Subcategory
 
 
 def cashflow_list(request):
@@ -9,6 +10,7 @@ def cashflow_list(request):
     type_id = request.GET.get("type")
     status_id = request.GET.get("status")
     category_id = request.GET.get("category")
+    subcategory_id = request.GET.get("subcategory")
     date_from = request.GET.get("date_from")
     date_to = request.GET.get("date_to")
     amount_min = request.GET.get("amount_min")
@@ -22,7 +24,10 @@ def cashflow_list(request):
         qs = qs.filter(status_id=status_id)
 
     if category_id:
-        qs = qs.filter(category_id=category_id)
+        qs = qs.filter(category__category_id=category_id)
+
+    if subcategory_id:
+        qs = qs.filter(category_id=subcategory_id)
 
     if date_from:
         qs = qs.filter(date_of_create__gte=date_from)
@@ -39,11 +44,39 @@ def cashflow_list(request):
     if comment:
         qs = qs.filter(comment__icontains=comment)
 
+    categories = Category.objects.all()
+
+    if category_id:
+        subcategories = Subcategory.objects.filter(category_id=category_id).all()
+    else:
+        subcategories = Subcategory.objects.all()
+
     context = {
         "cashflows": qs,
         "types": Type.objects.all(),
         "statuses": Status.objects.all(),
-        "categories": Category.objects.all(),
+        "categories": categories,
+        "subcategories": subcategories
     }
 
     return render(request, "app/cashflow_list.html", context)
+
+
+def cashflow_edit(request, pk=None):
+    instance = get_object_or_404(CashFlow, pk=pk) if pk else None
+
+    if request.method == "POST":
+        form = CashFlowForm(request.POST, instance=instance)
+
+        if form.is_valid():
+            form.save()
+            return redirect("cashflow_list")
+    else:
+        initial = {}
+
+        if instance and instance.category:
+            initial["category_filter"] = instance.category.category_id
+
+        form = CashFlowForm(instance=instance, initial=initial)
+
+    return render(request, "app/cashflow_edit.html", {"form": form, "object": instance})

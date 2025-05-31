@@ -33,13 +33,23 @@
                         {% endfor %}
                     </select>
                 </div>
-            
+                
                 <div class="col-md-2">
                     <label class="form-label">Категория</label>
-                    <select name="category" class="form-select">
+                    <select name="category" class="form-select" id="category-select">
                         <option value="">Все</option>
-                        {% for c in categories %}
-                            <option value="{{ c.id }}" {% if request.GET.category == c.id|stringformat:"s" %}selected{% endif %}>{{ c.name }}</option>
+                        {% for ctg in categories %}
+                            <option value="{{ ctg.id }}" {% if request.GET.category == ctg.id|stringformat:"s" %}selected{% endif %}>{{ ctg.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                
+                <div class="col-md-2">
+                    <label class="form-label">Подкатегория</label>
+                    <select name="subcategory" class="form-select" id="subcategory-select">
+                        <option value="">Все</option>
+                        {% for s_ctg in subcategories %}
+                            <option value="{{ s_ctg.id }}" {% if request.GET.subcategory == s_ctg.id|stringformat:"s" %}selected{% endif %}>{{ s_ctg.name }}</option>
                         {% endfor %}
                     </select>
                 </div>
@@ -94,7 +104,7 @@
             
                 <tbody>
                     {% for flow in cashflows %}
-                        <tr>
+                        <tr class="table-row-clickable" data-href="{% url "cashflow_edit" flow.id %}">
                             <td>{{ flow.date_of_create|date:"d.m.Y" }}</td>
                             <td>{{ flow.status.name }}</td>
                             <td>{{ flow.type.name }}</td>
@@ -112,5 +122,16 @@
             </table>
         </div>
     </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            document.querySelectorAll(".table-row-clickable").forEach(function(row) {
+                row.style.cursor = "pointer";
+                row.addEventListener("click", function() {
+                    window.location = row.dataset.href;
+                });
+            });
+        });
+    </script>
 </body>
 </html>
