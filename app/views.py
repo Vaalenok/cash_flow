@@ -1,6 +1,8 @@
+from django.contrib import messages
+from django.db.models import ProtectedError
 from django.shortcuts import render, get_object_or_404, redirect
 
-from .forms import CashFlowForm
+from .forms import CashFlowForm, TypeForm, CategoryForm, SubcategoryForm, StatusForm
 from .models import CashFlow, Type, Status, Category, Subcategory
 
 
@@ -81,8 +83,7 @@ def cashflow_create(request):
     else:
         form = CashFlowForm()
 
-    return render(request, "app/cashflow_create-edit.html",
-                  {"form": form, "back_url": request.META.get("HTTP_REFERER", "/")})
+    return render(request, "app/cashflow_create-edit.html", {"form": form})
 
 
 def cashflow_edit(request, pk=None):
@@ -92,13 +93,15 @@ def cashflow_edit(request, pk=None):
         action = request.POST.get("action")
         form = CashFlowForm(request.POST, instance=instance)
 
-        if action == "save":
-            if form.is_valid():
-                form.save()
-                return redirect("cashflow_list")
-        elif action == "delete":
-            instance.delete()
-            return redirect("cashflow_list")
+        match action:
+            case "save":
+                if form.is_valid():
+                    form.save()
+
+            case "delete":
+                instance.delete()
+
+        return redirect("cashflow_list")
     else:
         initial = {}
 
@@ -108,5 +111,58 @@ def cashflow_edit(request, pk=None):
 
         form = CashFlowForm(instance=instance, initial=initial)
 
-    return render(request, "app/cashflow_create-edit.html",
-                  {"form": form, "object": instance, "back_url": request.META.get("HTTP_REFERER", "/")})
+    return render(request, "app/cashflow_create-edit.html", {"form": form, "object": instance})
+
+
+def reference_edit(request):
+    if request.method == "POST":
+        action = request.POST.get("action")
+        obj_id = request.POST.get("id")
+        form = None
+
+        try:
+            match action:
+                case "add_type":
+                    form = TypeForm(request.POST)
+
+                case "delete_type":
+                    Type.objects.filter(id=obj_id).delete()
+
+                case "add_category":
+                    form = CategoryForm(request.POST)
+
+                case "delete_category":
+                    Category.objects.filter(id=obj_id).delete()
+
+                case "add_subcategory":
+                    form = SubcategoryForm(request.POST)
+
+                case "delete_subcategory":
+                    Subcategory.objects.filter(id=obj_id).delete()
+
+                case "add_status":
+                    form = StatusForm(request.POST)
+
+                case "delete_status":
+                    Status.objects.filter(id=obj_id).delete()
+        except ProtectedError:
+            messages.error(request, "Невозможно удалить: объект используется в других записях.")
+
+        if form and form.is_valid():
+            form.save()
+
+        return redirect("reference_edit")
+
+    context = {
+        "types": Type.objects.all(),
+        "categories": Category.objects.select_related("type"),
+        "subcategories": Subcategory.objects.select_related("category__type"),
+        "statuses": Status.objects.all(),
+
+        "type_form": TypeForm(),
+        "category_form": CategoryForm(),
+        "subcategory_form": SubcategoryForm(),
+        "status_form": StatusForm()
+    }
+
+    return render(request, "app/reference_edit.html", context)

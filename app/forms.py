@@ -1,5 +1,59 @@
 from django import forms
-from .models import CashFlow, Subcategory, Category, Type
+from .models import CashFlow, Subcategory, Category, Type, Status
+
+
+class TypeForm(forms.ModelForm):
+    name = forms.CharField(
+        max_length=100,
+        widget=forms.TextInput(attrs={"class": "form-control"})
+    )
+
+    class Meta:
+        model = Type
+        fields = ["name"]
+
+
+class CategoryForm(forms.ModelForm):
+    name = forms.CharField(
+        max_length=100,
+        widget=forms.TextInput(attrs={"class": "form-control"})
+    )
+
+    type = forms.ModelChoiceField(
+        queryset=Type.objects.all(),
+        widget=forms.Select(attrs={"class": "form-control"})
+    )
+
+    class Meta:
+        model = Category
+        fields = ["name", "type"]
+
+
+class SubcategoryForm(forms.ModelForm):
+    name = forms.CharField(
+        max_length=100,
+        widget=forms.TextInput(attrs={"class": "form-control"})
+    )
+
+    category = forms.ModelChoiceField(
+        queryset=Category.objects.all(),
+        widget=forms.Select(attrs={"class": "form-control"})
+    )
+
+    class Meta:
+        model = Subcategory
+        fields = ["name", "category"]
+
+
+class StatusForm(forms.ModelForm):
+    name = forms.CharField(
+        max_length=100,
+        widget=forms.TextInput(attrs={"class": "form-control"})
+    )
+
+    class Meta:
+        model = Status
+        fields = ["name"]
 
 
 class CashFlowForm(forms.ModelForm):
